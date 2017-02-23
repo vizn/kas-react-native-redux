@@ -1,0 +1,15 @@
+export const REQUESTSTART = 'REQUESTSTART'
+export const FAILUREMSG = 'FAILUREMSG'
+
+export const LOGIN_SUCCESS = 'LOGIN_SUCCESS'
+export const LOGOUT_USER = 'LOGOUT_USER'
+export const SNSLOGINS_SUCCESS = 'SNSLOGINS_SUCCESS'
+/*用户信息类型*/
+export const USERINFO_SUCCESS = 'USERINFO_SUCCESS'
+export const UPDATE_USER_SUCCESS = 'UPDATE_USER_SUCCESS'
+
+export const NICKNAME = 'NICKNAME'
+export const MOBILE = 'MOBILE'
+export const MOBILE_CAPTCHA = 'MOBILE_CAPTCHA'
+
+/*状态标识*/
