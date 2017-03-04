@@ -6,6 +6,7 @@ import { AppRegistry,
   View,
   ListView,
   WebView,
+  Image,
   Dimensions
 } from 'react-native';
 import { bindActionCreators } from 'redux'
@@ -19,24 +20,31 @@ import { Bubbles, DoubleBounce, Bars, Pulse } from 'react-native-loader';
 let HEADER = '#3b5998';
 let BGWASH = '#FFFFFF';
 
-class Home extends Component {
+export default class WebViewBridge extends Component {
   constructor(props) {
     super(props)
   }
   onBridgeMessage(e){
-    const { navigator } = this.props;
-    const message = e.nativeEvent.data
-    const str = message.split('^')
-    const reg=/^https?:\/\/(([a-zA-Z0-9_-])+(\.)?)*(:\d+)?(\/((\.)?(\?)?=?&?[a-zA-Z0-9_-](\?)?)*)*$/i //URL正则
-    if(reg.test(str[0])){
-      if(navigator) {
+    const { navigator } = this.props
+    if(navigator) {
+      const message = e.nativeEvent.data
+      const str = message.split('^')
+      const reg=/^https?:\/\/(([a-zA-Z0-9_-])+(\.)?)*(:\d+)?(\/((\.)?(\?)?=?&?[a-zA-Z0-9_-](\?)?)*)*$/i //URL正则
+      if(reg.test(str[0])){
         navigator.push({
           title: str[1],
-          component: ()=><Home {...this.props} url={str[0]}/>
+          component: ()=><WebViewBridge {...this.props} url={str[0]}/>
         })
       }
-    }if(str[0] == 'goback'){
-      navigator.pop()
+      if(str[0] == 'goback'){
+        navigator.pop()
+      }
+      if(str[0] == config.defaultUrl){
+        navigator.resetTo({
+          title: str[1],
+          component: ()=><WebViewBridge {...this.props} url={str[0]}/>
+        })
+      }
     }
   }
   render() {
@@ -49,7 +57,7 @@ class Home extends Component {
       <View style={[styles.container]}>
       <WebView
           ref="webviewbridge"
-          automaticallyAdjustContentInsets={false}
+          automaticallyAdjustContentInsets={true}
           source={{uri: this.props.url}}
           javaScriptEnabled={true}
           domStorageEnabled={true}
@@ -57,9 +65,13 @@ class Home extends Component {
           injectedJavaScript={injectScript}
           onMessage={this.onBridgeMessage.bind(this)}
           style={styles.webView}
+          renderError={()=>{
+            return(<Image  style={styles.error} source={require('../assets/images/4041.jpg')}/>)
+          }}
           renderLoading={()=>{
             return(<View style={styles.loading}><Bubbles size={10} color="#333"/></View>)
           }}
+          startInLoadingState = {true}
         />
       <View style ={styles.footer} />
       </View>
@@ -69,16 +81,22 @@ class Home extends Component {
 
 const {height,width} = Dimensions.get('window')
 const styles = StyleSheet.create({
+  error: {
+    // height: Dimensions.get('window').height,
+    width: Dimensions.get('window').width,
+    resizeMode: Image.resizeMode.cover,
+    backgroundColor: '#FFFFFF'
+  },
   container: {
     flex: 1,
-    top :40
+    top :40,
+    backgroundColor: BGWASH,
   },
   loading:{
     top: height/2 - 80,
     left: width/2 - 35
   },
   webView: {
-    backgroundColor: BGWASH,
     height: height,
     width: width
   },
@@ -86,18 +104,3 @@ const styles = StyleSheet.create({
     height: 35
   }
 })
-function mapStateToProps(state) {
-  return {
-    captchaData: state.captchaData.toJS(),
-    loginState: state.loginState.toJS(),
-    status: state.status.toJS()
-  }
-}
-
-function mapDispatchToProps(dispatch) {
-  return {
-    actions: bindActionCreators(Actions, dispatch)
-  }
-}
-
-export default connect(mapStateToProps,mapDispatchToProps)(Home)

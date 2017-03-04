@@ -57,7 +57,13 @@ const status = createReducer(fromJS({
   }
 })
 //用户基本信息
-const userInfo = createReducer(null,{
+const userInfo = createReducer({
+  nickname: '未登录',
+  headimgurl: 'https://s3.amazonaws.com/uifaces/faces/twitter/adhamdannaway/128.jpg',
+  provider: '注册',
+  role: '登陆',
+  status: 1
+},{
   [USERINFO_SUCCESS]: (state, action) => {
     return fromJS(action.userInfo)
   }

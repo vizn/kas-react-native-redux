@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
 import { AppRegistry,
+  StyleSheet,
+  ToastAndroid,
   Text,
   View,
   Image,
@@ -9,23 +11,31 @@ import { AppRegistry,
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import * as Actions from '../../redux/actions/'
-import { FormLabel, FormInput,Button } from 'react-native-elements'
+import { FormLabel, FormInput, Button } from 'react-native-elements'
 
+const styles = StyleSheet.create({
+    top:{
+      height: 65
+    },
+    text:{
+      height:40
+    }
+})
 class Mobile extends Component {
   constructor(props){
     super(props)
-    this.state = {mobile: ''}
+    this.state={moble:''}
     this.handleClick = this.handleClick.bind(this)
   }
   check(){
     const MOBILE_REGEXP = /^1\d{10}$/;
-    if (this.state.mobile=="") {
-       alert("手机号不能为空")
-       return false
+    if (this.state.mobile == "") {
+      ToastAndroid.show('手机号不能为空', ToastAndroid.SHORT)
+      return false
     }
     if(!MOBILE_REGEXP.test(this.state.mobile)){
-        alert("手机号不合法")
-        return false
+      ToastAndroid.show('手机号不合法', ToastAndroid.SHORT)
+      return false
     }
     this.props.actions.login(this.state.mobile, this.state.captcha)
     return true
@@ -44,11 +54,11 @@ class Mobile extends Component {
     if(captchaData.status == 0){
       return(
         <View>
-          <View style={{height :65}}></View>
+          <View style={styles.top}></View>
           <FormLabel>手机号</FormLabel>
-          <FormInput style={{paddingTop:100}} placeholderTextColor = '#CCCCCC' placeholder ='请输入手机号' onChangeText={(mobile)=>this.setState({mobile})} />
+          <FormInput inputStyle={styles.text} placeholderTextColor = '#CCCCCC' placeholder ='请输入手机号' onChangeText={(mobile)=>this.setState({mobile})} />
           <FormLabel>验证码</FormLabel>
-          <FormInput style={{paddingTop:100}} placeholderTextColor = '#CCCCCC' placeholder ='请输入验证码' onChangeText={(captcha)=>this.setState({captcha})}/>
+          <FormInput inputStyle={styles.text} placeholderTextColor = '#CCCCCC' placeholder ='请输入验证码' onChangeText={(captcha)=>this.setState({captcha})}/>
           <TouchableOpacity onPress={this.handleClick}>
             <FormLabel>{captchaData.txt}</FormLabel>
           </TouchableOpacity>
@@ -58,11 +68,11 @@ class Mobile extends Component {
     }else {
       return(
         <View>
-          <View style={{height :65}}></View>
+          <View style={styles.top}></View>
           <FormLabel>手机号</FormLabel>
-          <FormInput placeholderTextColor = '#CCCCCC' placeholder ='请输入手机号' onChangeText={(mobile) => this.setState({mobile})} />
+          <FormInput inputStyle={styles.text} placeholderTextColor = '#CCCCCC' placeholder ='请输入手机号' onChangeText={(mobile) => this.setState({mobile})}/>
           <FormLabel>验证码</FormLabel>
-          <FormInput placeholderTextColor = '#CCCCCC' placeholder ='请输入验证码'/>
+          <FormInput inputStyle={styles.text} placeholderTextColor = '#CCCCCC' placeholder ='请输入验证码' onChangeText={(captcha)=>this.setState({captcha})}/>
           <FormLabel>{captchaData.txt}</FormLabel>
           <Button small title='登  陆' buttonStyle={{marginTop: 20}} onPress={this.check.bind(this)}/>
         </View>
@@ -70,6 +80,7 @@ class Mobile extends Component {
     }
   }
 }
+
 function mapStateToProps(state) {
   return {
     captchaData: state.captchaData.toJS()

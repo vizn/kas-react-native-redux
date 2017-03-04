@@ -68,9 +68,9 @@ class MyPage extends Component {
           <ListItem
             roundAvatar
             key= '0'
-            title={this.props.userInfo.nickname||'未登陆'}
-            avatar={this.props.userInfo.headimgurl||'https://s3.amazonaws.com/uifaces/faces/twitter/adhamdannaway/128.jpg'}
-            subtitle={(this.props.userInfo.provider + this.props.userInfo.role)||''}
+            title={this.props.userInfo.nickname}
+            avatar={this.props.userInfo.headimgurl}
+            subtitle={this.props.userInfo.provider + ' | ' + this.props.userInfo.role}
           />
         </List>
         <List>

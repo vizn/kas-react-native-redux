@@ -7,7 +7,9 @@ import { AppRegistry,
   View,
   ListView,
   Navigator,
-  TouchableOpacity
+  TouchableOpacity,
+  ToastAndroid,
+  BackAndroid
 } from 'react-native';
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
@@ -52,8 +54,23 @@ class App extends Component {
     this.state = {selectedTab: 'home', islogin: 0}
   }
   componentDidMount (){
-      this.props.wxapiActions.registerApp() //微信API初始化
-      this.props.actions.getUserInfo()//获取用户资料
+    this.props.wxapiActions.registerApp() //微信API初始化
+  }
+  componentWillMount() {
+    BackAndroid.addEventListener('hardwareBackPress', this.onBackAndroid);
+  }
+  componentWillUnmount() {
+    BackAndroid.removeEventListener('hardwareBackPress', this.onBackAndroid);
+  }
+  onBackAndroid = () => {
+    console.log(this.lastBackPressed)
+    if (this.lastBackPressed && (this.lastBackPressed + 2000) >= Date.now()) {
+      //最近2秒内按过back键，可以退出应用。
+      return false
+    }
+    this.lastBackPressed = Date.now()
+    ToastAndroid.show('再按一次退出应用', ToastAndroid.SHORT)
+    return true
   }
   //Navigation导航器场景载入
   renderScene (route, nav) {
@@ -65,10 +82,7 @@ class App extends Component {
   changeTab (selectedTab) {
     this.setState({selectedTab})
   }
-  login(){
-    this.setState({islogin: 1})
-  }
-  renderTab(Component, selectedTab, title, renderIcon, badgeText) {
+  renderTab(Component, selectedTab, title, navTitle, renderIcon, badgeText) {
         return (
           <Tab
             tabStyle={styles.tabSelectedstyle}
@@ -82,7 +96,7 @@ class App extends Component {
             onPress={() => this.changeTab(selectedTab)}>
             <Navigator
             renderScene={this.renderScene}
-            initialRoute={{ component: Component, title:'KAS记账'}}
+            initialRoute={{ component: Component, title: navTitle}}
             configureScene={(route) => {
               if (route.sceneConfig) {
                 return route.sceneConfig
@@ -110,8 +124,8 @@ class App extends Component {
           //主页面渲染
           return (
               <Tabs tabBarStyle={styles.container}>
-                  {this.renderTab(Home, 'home', '首页', 'home')}
-                  {this.renderTab(MyPage, 'mypage', '我', 'person')}
+                  {this.renderTab(Home, 'home', '首页', 'KAS记账', 'home')}
+                  {this.renderTab(MyPage, 'mypage', '我', '用户信息', 'person')}
               </Tabs>
           )
         }

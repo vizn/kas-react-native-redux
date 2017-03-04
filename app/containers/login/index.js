@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { AppRegistry,
+  StyleSheet,
   Text,
   View,
   Image,
@@ -44,7 +45,7 @@ class Login extends Component {
   render(){
     return (
       <View style={{height: Dimensions.get('window').height}}>
-        <Image  style={styles.loginImage} source={require('../../assets/images/screen696x696.jpg')}/>
+        <Image  style={styles.loginImage} source={require('../../assets/images/screen.jpg')}/>
         <Button onPress={this.props.wxapiActions.getWechatAccess_token}  small title='微信登陆' buttonStyle={{marginTop: 20}}/>
         <View style={styles.flexContainer}>
           <View style={styles.cellfixed}>
@@ -67,31 +68,34 @@ class Login extends Component {
     )
   }
 }
-styles = {
-        loginImage: {
-          height: Dimensions.get('window').height * 2/ 3,
-          resizeMode: Image.resizeMode.cover,
-          backgroundColor: 'rgb(96,198,187)'
-        },
-        flexContainer: {
-            // 容器需要添加direction才能变成让子元素flex
-            position : 'absolute',
-            flexDirection: 'row',
-            bottom: 50,
-            margin: 15
-        },
-        cell: {
-            flex: 1
-        },
-        txt: {
-            color :'#666666',
-            fontSize: 14,
+const styles = StyleSheet.create(
+  {
+          loginImage: {
+            height: Dimensions.get('window').height * 2/ 3,
+            width: Dimensions.get('window').width,
+            resizeMode: Image.resizeMode.cover,
+            backgroundColor: 'rgb(96,198,187)'
+          },
+          flexContainer: {
+              // 容器需要添加direction才能变成让子元素flex
+              position : 'absolute',
+              flexDirection: 'row',
+              bottom: 50,
+              margin: 15
+          },
+          cell: {
+              flex: 1
+          },
+          txt: {
+              color :'#666666',
+              fontSize: 14,
 
-        },
-        cellfixed: {
+          },
+          cellfixed: {
 
-        }
-    }
+          }
+      }
+)
     function mapStateToProps(state) {
       return {
         loginState: state.loginState.toJS()

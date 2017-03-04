@@ -1,5 +1,8 @@
 import api from './apiUri'
-
+import {
+  Alert,
+  ToastAndroid
+} from 'react-native'
 import {
   REQUESTSTART,
   FAILUREMSG,
@@ -84,14 +87,14 @@ export function login(mobile, mobileCaptcha) {
 		.then(({json,response}) => {
 			if(!response.ok){
         if(json.error_msg){
-          alert(json.error_msg)
+          Alert.alert(json.error_msg)
         }
 				return dispatch(failureMsg(json))
 			}else{
         if(json.success === false){
-          alert("未知错误")
+          ToastAndroid.show('服务器错误', ToastAndroid.SHORT)
         }else{
-          alert('登陆成功')
+          ToastAndroid.show('登陆成功', ToastAndroid.SHORT)
           global.storage.save({
             key: 'loginState',  // 注意:请不要在key中使用_下划线符号!
             rawData: json,
@@ -102,7 +105,7 @@ export function login(mobile, mobileCaptcha) {
         }
       }
 		}).catch(e=>{
-      alert('网络错误')
+      ToastAndroid.show('网络错误', ToastAndroid.SHORT)
       console.log(e.message)
 		})
 	}
@@ -110,10 +113,18 @@ export function login(mobile, mobileCaptcha) {
 //退出登录
 export function logout() {
   return dispatch => {
-    global.storage.remove({
-      key: 'loginState'
-    })
-    dispatch({type: LOGOUT_USER})
+    Alert.alert('', '确定退出？',
+    [
+      {text: '取消', style: 'cancel'},
+      {text: '确定', onPress: ()=> {
+        global.storage.remove({
+          key: 'loginState'
+        })
+        dispatch({type: LOGOUT_USER})
+      }}
+    ],
+    { cancelable: false }
+    )
   }
 }
 
@@ -141,7 +152,6 @@ export function getUserInfo() {
             }
         }).then(response => response.json().then(json => ({ json, response })))
 				  .then(({json,response}) => {
-
 				  	if(!response.ok){
 				  		dispatch(failureMsg())
 				  	}else{

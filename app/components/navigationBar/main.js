@@ -87,9 +87,19 @@ const NavigationBarRouteMapper = {
     )
   },
   RightButton: function(route, navigator, index) {
-    if(index === 0){
-      return null
+    if(route.title == 'KAS记账'){
+      return(
+        <TouchableOpacity
+          onPress={() => navigator.replace({
+            title: route.title,
+            component: route.component
+          })}
+          style = {[styles.navBarItem, styles.navBarRightButton]}>
+          <Icon name='sync' color='#CCCCCC'/>
+        </TouchableOpacity>
+      )
     }
+    return null
   },
   Title: function(route, navigator, index) {
     return (
